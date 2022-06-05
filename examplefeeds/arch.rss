@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Arch Linux: Recent news updates</title><link>https://archlinux.org/news/</link><description>The latest and greatest news from the Arch Linux distribution.</description><atom:link href="https://archlinux.org/feeds/news/" rel="self"/><language>en-us</language><lastBuildDate>Thu, 12 May 2022 19:48:50 +0000</lastBuildDate><item><title>Undone replacement of pipewire-media-session with wireplumber</title><link>https://archlinux.org/news/undone-replacement-of-pipewire-media-session-with-wireplumber/</link><description>&lt;p&gt;Two days ago the &lt;code&gt;wireplumber&lt;/code&gt; package was made to replace &lt;code&gt;pipewire-media-session&lt;/code&gt; as the latter session manager for PipeWire is considered dead upstream and will see no more releases. Unfortunately, this step was premature.&lt;/p&gt;
+&lt;p&gt;Our pipewire audio packages (&lt;code&gt;pipewire-alsa&lt;/code&gt;, &lt;code&gt;pipewire-jack&lt;/code&gt; and &lt;code&gt;pipewire-pulse&lt;/code&gt;) ship configuration that prompt media-session to activate PipeWire's audio features. When these packages are not installed and the configuration is missing, PipeWire can be used for screen recording without interfering with ALSA or PulseAudio.&lt;/p&gt;
+&lt;p&gt;WirePlumber disregards this mechanism and always configures PipeWire to grab audio devices, meaning users of PulseAudio or bare ALSA experience broken audio.&lt;/p&gt;
+&lt;p&gt;The replacement has been reverted while we attempt to look for a better solution switching to WirePlumber. If you are currently not using PipeWire for audio and &lt;code&gt;wireplumber&lt;/code&gt; got installed on your system, please reinstall &lt;code&gt;pipewire-media-session&lt;/code&gt; and reboot to restore audio functionality.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pacman -Syu pipewire-media-session
+&lt;/code&gt;&lt;/pre&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jan Alexander Steffens</dc:creator><pubDate>Thu, 12 May 2022 19:48:50 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2022-05-12:/news/undone-replacement-of-pipewire-media-session-with-wireplumber/</guid></item><item><title>QEMU &gt;= 7.0.0 changes split package setup</title><link>https://archlinux.org/news/qemu-700-changes-split-package-setup/</link><description>&lt;p&gt;With the update to qemu 7.0.0 the package has been turned into a more
+fine grained split package utilizing meta packages.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;qemu&lt;/code&gt; package is now virtually provided by the meta packages
+  &lt;code&gt;qemu-base&lt;/code&gt;, &lt;code&gt;qemu-desktop&lt;/code&gt; and &lt;code&gt;qemu-full&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The functionality of &lt;code&gt;qemu&lt;/code&gt; prior to 7.0.0 is replaced by
+  &lt;code&gt;qemu-desktop&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The functionality of &lt;code&gt;qemu-headless&lt;/code&gt; is replaced by
+  &lt;code&gt;qemu-base&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The functionality of &lt;code&gt;qemu-arch-extra&lt;/code&gt; and &lt;code&gt;qemu-headless-arch-extra&lt;/code&gt;
+  is replaced by &lt;code&gt;qemu-emulators-full&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The meta package &lt;code&gt;qemu-full&lt;/code&gt; provides all QEMU related
+  packages (excluding &lt;code&gt;qemu-guest-agent&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">David Runge</dc:creator><pubDate>Mon, 09 May 2022 10:35:57 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2022-05-09:/news/qemu-700-changes-split-package-setup/</guid></item><item><title>Keycloak 17.0.1-2 update requires manual reconfiguration</title><link>https://archlinux.org/news/keycloak-1701-2-update-requires-manual-reconfiguration/</link><description>&lt;p&gt;The &lt;code&gt;keycloak&lt;/code&gt; package prior to version 17.0.1-2 was running with WildFly server. Since upstream officially moved to &lt;a href="https://www.keycloak.org/2020/12/first-keycloak-x-release.adoc"&gt;Quarkus distribution&lt;/a&gt;, Arch Linux follows this approach. This means some manual intervention is required for the upgrade.&lt;/p&gt;
+&lt;p&gt;The configuration needs to be adjusted from the old &lt;code&gt;.xml&lt;/code&gt; format to the new &lt;code&gt;/etc/keycloak/keycloak.conf&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Prior to the upgrade, stop the keycloak service, upgrade the package and migrate the configuration before starting:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl stop keycloak.service
+pacman -Syu keycloak
+# migrate configuration /etc/keycloak/keycloak.conf
+systemctl start keycloak.service
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;See Keycloak &lt;a href="https://www.keycloak.org/migration/migrating-to-quarkus"&gt;migration docs&lt;/a&gt; and Keycloak Quarkus &lt;a href="https://www.keycloak.org/server/configuration"&gt;server docs&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Leonidas Spyropoulos</dc:creator><pubDate>Fri, 25 Mar 2022 14:25:57 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2022-03-25:/news/keycloak-1701-2-update-requires-manual-reconfiguration/</guid></item><item><title>Arch Linux Leader Election Results</title><link>https://archlinux.org/news/arch-linux-leader-election-results/</link><description>&lt;p&gt;This month we held our leader election, and our current leader Levente Polyák ran unopposed. As per &lt;a href="https://wiki.archlinux.org/title/DeveloperWiki:Project_Leader#Election"&gt;our election rules&lt;/a&gt; he is re-elected for a new term.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Congratulations to Levente Polyak on a new term!&lt;/strong&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giancarlo Razzolini</dc:creator><pubDate>Wed, 23 Feb 2022 11:51:18 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2022-02-23:/news/arch-linux-leader-election-results/</guid></item><item><title>Debug packages and debuginfod</title><link>https://archlinux.org/news/debug-packages-and-debuginfod/</link><description>&lt;p&gt;We are very happy to announce that debug packages are now available in Arch Linux.&lt;/p&gt;
+&lt;p&gt;Debug symbols and source listing are provided through our debuginfod instance which can be utilized by debuggers such as gdb and delve.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://debuginfod.archlinux.org/"&gt;https://debuginfod.archlinux.org/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;A couple of sponsored mirrors are providing the debug repositories while we figure out and communicate the new &lt;a href="https://wiki.archlinux.org/title/DeveloperWiki:NewMirrors"&gt;mirror requirements&lt;/a&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://america.mirror.pkgbuild.com"&gt;https://america.mirror.pkgbuild.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://asia.mirror.pkgbuild.com"&gt;https://asia.mirror.pkgbuild.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://europe.mirror.pkgbuild.com"&gt;https://europe.mirror.pkgbuild.com&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Not all packages provide debug packages as enabling it for all packages is an ongoing effort.&lt;/p&gt;
+&lt;p&gt;For more information, please visit the &lt;a href="https://wiki.archlinux.org/title/Debuginfod"&gt;Debuginfod&lt;/a&gt; wiki article, and also our newly renovated &lt;a href="https://wiki.archlinux.org/title/Debugging/Getting_traces"&gt;Debugging/Getting traces&lt;/a&gt; article.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Morten Linderud</dc:creator><pubDate>Wed, 02 Feb 2022 20:28:36 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2022-02-02:/news/debug-packages-and-debuginfod/</guid></item><item><title>linux-firmware 20220119.0c6a7b3-2 requires kernel &gt;=5.3 and package splitting</title><link>https://archlinux.org/news/linux-firmware-202201190c6a7b3-2-requires-kernel-53-and-package-splitting/</link><description>&lt;p&gt;The linux-firmware package 20220119.0c6a7b3-2 implements kernel
+firmware compression. Linux kernel from 5.3 on support loading
+from xz compressed firmware.&lt;br /&gt;
+CONFIG_FW_LOADER_COMPRESS kernel option must be enabled. All official Arch Linux kernel support this for a long time. [1]&lt;/p&gt;
+&lt;p&gt;The linux-firmware package has been split into smaller packages to
+further reduce required disk space. Some big firmware files of
+rarely used hardware have been split into separate packages.&lt;br /&gt;
+This affects firmware for Mellanox Spectrum switches, Marvell devices,
+Qualcomm SoCs, Cavium LiquidIO server adapters, QLogic devices, 
+Broadcom NetXtreme II 10Gb ethernet adapters.&lt;br /&gt;
+Make sure to install additional firmware packages if needed. [2]&lt;/p&gt;
+&lt;p&gt;[1] &lt;a href="https://bugs.archlinux.org/task/72899"&gt;FS#72899&lt;/a&gt;&lt;br /&gt;
+[2] &lt;a href="https://bugs.archlinux.org/task/72559"&gt;FS#72559&lt;/a&gt; +
+&lt;a href="https://github.com/archlinux/svntogit-packages/commit/a12e069d0cae39a87f003beab9a97f7211abcac2.patch"&gt;svn commit&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Andreas Radke</dc:creator><pubDate>Fri, 21 Jan 2022 17:35:16 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2022-01-21:/news/linux-firmware-202201190c6a7b3-2-requires-kernel-53-and-package-splitting/</guid></item><item><title>libxml2&gt;=2.9.12-6 update may require manual intervention</title><link>https://archlinux.org/news/libxml22912-6-update-may-require-manual-intervention/</link><description>&lt;p&gt;The libxml2 package prior to version 2.9.12-6 was missing the compiled python modules. This has been fixed in 2.9.12-6, so the upgrade may need to overwrite any untracked pyc files created. If you get errors like these&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;libxml2: /usr/lib/python3.10/site-packages/__pycache__/drv_libxml2.cpython-310.opt-1.pyc exists in filesystem
+libxml2: /usr/lib/python3.10/site-packages/__pycache__/drv_libxml2.cpython-310.pyc exists in filesystem
+libxml2: /usr/lib/python3.10/site-packages/__pycache__/libxml2.cpython-310.opt-1.pyc exists in filesystem
+libxml2: /usr/lib/python3.10/site-packages/__pycache__/libxml2.cpython-310.pyc exists in filesystem
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;when updating, use&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pacman -Syu --overwrite /usr/lib/python3.10/site-packages/__pycache__/\*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;to perform the upgrade.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jan Alexander Steffens</dc:creator><pubDate>Mon, 27 Dec 2021 06:17:35 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2021-12-27:/news/libxml22912-6-update-may-require-manual-intervention/</guid></item><item><title>Sorting out old password hashes</title><link>https://archlinux.org/news/sorting-out-old-password-hashes/</link><description>&lt;p&gt;Starting with &lt;code&gt;libxcrypt&lt;/code&gt; 4.4.21, weak password hashes (such as &lt;em&gt;MD5&lt;/em&gt; and
+&lt;em&gt;SHA1&lt;/em&gt;) are no longer accepted for new passwords. Users that still have
+their passwords stored with a weak hash will be asked to update their
+password on their next login.&lt;/p&gt;
+&lt;p&gt;If the login just fails (for example from display manager) switch to a
+virtual terminal (&lt;em&gt;Ctrl-Alt-F2&lt;/em&gt;) and log in there once.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Christian Hesse</dc:creator><pubDate>Tue, 08 Jun 2021 06:32:03 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2021-06-08:/news/sorting-out-old-password-hashes/</guid></item><item><title>Move of official IRC channels to libera.chat</title><link>https://archlinux.org/news/move-of-official-irc-channels-to-liberachat/</link><description>&lt;p&gt;As some of you may have read over the past days, there has been an ownership dispute over the &lt;a href="https://freenode.net"&gt;freenode.net&lt;/a&gt; network. The IRC network has been used by Arch Linux and many other projects over the past decades as a platform for discussion and support.
+The dispute led to the exodus of most former freenode staff from the network and the founding of a new network: &lt;a href="https://libera.chat"&gt;libera.chat&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Starting today, Arch Linux and its sister projects &lt;a href="https://archlinuxarm.org"&gt;Arch Linux ARM&lt;/a&gt; and &lt;a href="https://archlinux32.org"&gt;Arch Linux 32&lt;/a&gt; will begin migrating the official IRC channels from freenode.net to libera.chat. Please bear with us as this can take some time to be fully settled in.&lt;/p&gt;
+&lt;p&gt;We thank the freenode community for the many years of great service and collaboration.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">David Runge</dc:creator><pubDate>Mon, 24 May 2021 20:14:14 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2021-05-24:/news/move-of-official-irc-channels-to-liberachat/</guid></item><item><title>Installation medium with installer</title><link>https://archlinux.org/news/installation-medium-with-installer/</link><description>&lt;p&gt;The installation medium now provides a guided &lt;a href="https://archlinux.org/packages/extra/any/archinstall/"&gt;installer&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This addition to the default method of installation (based on the &lt;a href="https://wiki.archlinux.org/index.php/Installation_guide"&gt;installation guide&lt;/a&gt;) is similar to the &lt;a href="https://wiki.archlinux.org/index.php/Category:Installation_process"&gt;other methods&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you use this installer, do not forget to mention it when asking for support and also to provide the archinstall log, when asked.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giancarlo Razzolini</dc:creator><pubDate>Thu, 01 Apr 2021 18:02:38 +0000</pubDate><guid isPermaLink="false">tag:archlinux.org,2021-04-01:/news/installation-medium-with-installer/</guid></item></channel></rss>

@@ -1,0 +1,13 @@
+[package]
+name = "rnaf"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+crossterm = "0.23.2"
+tokio = { version = "1.19", features = ["full"] }
+reqwest = "0.11.10"
+futures = "0.3.21"
+rss = "2.0.1"
