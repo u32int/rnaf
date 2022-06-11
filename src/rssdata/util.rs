@@ -1,20 +1,19 @@
 use rss::Channel;
 use std::error::Error;
-use std::fs::File;
 use std::io::BufReader;
 
 use futures::future::join_all;
 
-pub async fn get_feed(url: &str) -> Result<Channel, Box<dyn Error>> {
+async fn get_feed(url: &str) -> Result<Channel, Box<dyn Error>> {
     let feed = reqwest::get(url).await?.bytes().await?;
     let ch = Channel::read_from(&feed[..])?;
 
     Ok(ch)
 }
 
-pub async fn feed_from_file(path: &str) -> Result<Channel, Box<dyn Error>> {
+async fn feed_from_file(path: &str) -> Result<Channel, Box<dyn Error>> {
     eprintln!("getting path: {}", path);
-    let f = File::open(path)?;
+    let f = tokio::fs::File::open(path).await?.into_std().await;
     let ch = Channel::read_from(BufReader::new(f))?;
 
     Ok(ch)
