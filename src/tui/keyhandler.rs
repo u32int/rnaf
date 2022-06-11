@@ -36,19 +36,17 @@ pub fn handle_keyevent(
                 app.tui.state = TuiState::AllFeeds(0);
             }
             KeyCode::Down | KeyCode::Char('j') => {
+		use std::cmp::min;
                 app.tui.state = TuiState::Feed(
                     *n,
-                    (sel + 1).clamp(
-                        0,
-                        app.data.feeds[*n as usize].items.iter().count() as u16 - 1,
-                    ),
+                    (sel + 1).clamp(0, min(app.data.feeds[*n as usize].items.len() as u16 - 1, app.tui.termsize.1-2)),
                 );
             }
             KeyCode::Up | KeyCode::Char('k') => {
                 app.tui.state = TuiState::Feed(
                     *n,
                     (sel.checked_sub(1).unwrap_or(0))
-                        .clamp(0, app.data.feeds[*n as usize].items.iter().count() as u16),
+                        .clamp(0, app.data.feeds[*n as usize].items.len() as u16),
                 );
             }
             KeyCode::Enter => {
