@@ -1,7 +1,6 @@
 use std::error::Error;
 use std::io::{Stdout, Write};
 
-use crossterm::cursor::MoveDown;
 use crossterm::style::{
     Attribute, Print, PrintStyledContent, SetAttribute, SetForegroundColor, Stylize,
 };
@@ -123,7 +122,8 @@ impl Tui {
                     }
                 }
             }
-            TuiState::Article(n, i) => {
+            // n - feed i - article
+            TuiState::Article(n, i, scroll) => {
                 let currarticle = feeddata[n as usize].items().iter().nth(i as usize).unwrap();
                 // Draw top bar
                 let title = currarticle.title().unwrap();
@@ -146,8 +146,21 @@ impl Tui {
                         Print(format!("{}: {}", meta[0], meta[1])),
                     )?;
                 }
-                let desc = currarticle.description().unwrap();
-                queue_html_as_string(desc.to_string(), stdout)?;
+                // draw description/content
+
+                let desc = currarticle
+                    .description()
+                    .unwrap()
+                    .lines()
+                    .collect::<Vec<&str>>();
+                let mut cropped = String::new();
+                for i in scroll..std::cmp::min(desc.len() as u16, self.termsize.1) {
+                    cropped.push_str(desc[i as usize]);
+                    cropped.push('\n');
+                }
+
+                queue_html_as_string(cropped.to_string(), stdout, self.termsize)?;
+            }
             TuiState::HelpMenu(_) => {
                 queue!(
                     stdout,
@@ -163,13 +176,17 @@ impl Tui {
     }
 }
 
-fn queue_html_as_string(html: String, stdout: &mut Stdout) -> Result<(), Box<dyn Error>> {
-    let html = html.replace('\n', "<NL>");
-
+fn queue_html_as_string(
+    html: String,
+    stdout: &mut Stdout,
+    termsize: (u16, u16),
+) -> Result<(), Box<dyn Error>> {
+    let html = html.replace('\n', "<RNAFNL>");
     let tags = html.split(&['<', '>']);
+
     let mut links_buff: Vec<&str> = Vec::new();
 
-    queue!(stdout, cursor::MoveTo(1, 6))?;
+    queue!(stdout, cursor::MoveTo(0, 6))?;
 
     for t in tags {
         // links
@@ -185,11 +202,13 @@ fn queue_html_as_string(html: String, stdout: &mut Stdout) -> Result<(), Box<dyn
         } else {
             // the rest
             match t {
-                "NL" => queue!(
-                    stdout,
-                    cursor::MoveDown(1),
-                    cursor::MoveTo(0, cursor::position()?.1)
-                )?,
+                "RNAFNL" => {
+                    queue!(
+                        stdout,
+                        cursor::MoveDown(1),
+                        cursor::MoveTo(0, cursor::position()?.1),
+                    )?;
+                }
                 "code" => queue!(stdout, SetForegroundColor(Color::Yellow))?,
                 "/code" => queue!(stdout, SetForegroundColor(Color::Reset))?,
                 "pre" => queue!(stdout, cursor::MoveTo(0, cursor::position()?.1))?,
@@ -200,6 +219,7 @@ fn queue_html_as_string(html: String, stdout: &mut Stdout) -> Result<(), Box<dyn
                 "li" => {
                     queue!(
                         stdout,
+                        cursor::MoveDown(1),
                         cursor::MoveTo(0, cursor::position()?.1),
                         Print("- "),
                     )?;
@@ -211,10 +231,22 @@ fn queue_html_as_string(html: String, stdout: &mut Stdout) -> Result<(), Box<dyn
                         cursor::MoveTo(0, cursor::position()?.1),
                     )?;
                 }
-                "/li" | "/p" => {}
+                "/li" => {}
+                "/p" => {}
                 "/a" => queue!(stdout, SetAttribute(Attribute::NoUnderline))?,
                 _ => {
-                    queue!(stdout, Print(t))?;
+                    if t.len() == 0 {
+                        continue;
+                    }
+
+                    let mut start = 0;
+                    let end = t.len();
+                    let screensize = termsize.0 as usize - 10;
+                    while end - start > screensize {
+                        queue!(stdout, Print(&t[start..start + screensize]),)?;
+                        start += screensize;
+                    }
+                    queue!(stdout, Print(&t[start..end]),)?;
                 }
             }
         }

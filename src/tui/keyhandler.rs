@@ -36,10 +36,16 @@ pub fn handle_keyevent(
                 app.tui.state = TuiState::AllFeeds(0);
             }
             KeyCode::Down | KeyCode::Char('j') => {
-		use std::cmp::min;
+                use std::cmp::min;
                 app.tui.state = TuiState::Feed(
                     *n,
-                    (sel + 1).clamp(0, min(app.data.feeds[*n as usize].items.len() as u16 - 1, app.tui.termsize.1-2)),
+                    (sel + 1).clamp(
+                        0,
+                        min(
+                            app.data.feeds[*n as usize].items.len() as u16 - 1,
+                            app.tui.termsize.1 - 2,
+                        ),
+                    ),
                 );
             }
             KeyCode::Up | KeyCode::Char('k') => {
@@ -51,15 +57,31 @@ pub fn handle_keyevent(
             }
             KeyCode::Enter => {
                 Tui::clear(stdout)?;
-                app.tui.state = TuiState::Article(*n, *sel);
+                app.tui.state = TuiState::Article(*n, *sel, 0);
             }
+
             _ => {}
         },
-        TuiState::Article(n, i) => match ev.code {
+
+        TuiState::Article(n, i, s) => match ev.code {
             KeyCode::Esc | KeyCode::Char('q') => {
                 Tui::clear(stdout)?;
                 app.tui.state = TuiState::Feed(*n, *i);
             }
+            KeyCode::Down | KeyCode::Char('j') => {
+                Tui::clear(stdout)?;
+                app.tui.state = TuiState::Article(*n, *i, *s + 1)
+            }
+            KeyCode::Up | KeyCode::Char('k') => {
+                Tui::clear(stdout)?;
+                app.tui.state = TuiState::Article(*n, *i, s.checked_sub(1).unwrap_or(0));
+            }
+            KeyCode::Char('?') => {
+                Tui::clear(stdout)?;
+                app.tui.state = TuiState::HelpMenu(Box::new(TuiState::Article(*n, *i, *s)));
+            }
+            _ => {}
+        },
 
         TuiState::HelpMenu(prevstate) => match ev.code {
             KeyCode::Esc | KeyCode::Char('q') => {
