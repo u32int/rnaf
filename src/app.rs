@@ -30,7 +30,17 @@ impl App {
     }
 
     pub fn init(&self, stdout: &mut Stdout) -> Result<(), Box<dyn Error>> {
+        let minsize = (60, 30);
+        if self.tui.termsize.0 < minsize.0 || self.tui.termsize.1 < minsize.1 {
+            eprintln!(
+                "Error! Terminal size too small!\nRequired size: {}x{}\nCurrent size:{}x{}",
+                minsize.0, minsize.1, self.tui.termsize.0, self.tui.termsize.1
+            );
+            std::process::exit(1);
+        }
+
         Tui::setup(stdout)?;
+
         self.tui.draw(stdout, &self.data.feeds)?;
         Ok(())
     }
