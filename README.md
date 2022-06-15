@@ -13,7 +13,7 @@ For code styling use rust-fmt.
   - [ ] Guarantee clean exit (wrapper?)
   - [ ] Help menus
   - [ ] Smooth resize
-- [x] Load from file
+- [x] *Async* Load from file
 - [x] *Async* Load from url
 - [ ] TOML config file
   - [ ] urls/files
@@ -21,3 +21,6 @@ For code styling use rust-fmt.
 - [ ] Reload feeds
 - [ ] Cache
 - [ ] Theming
+
+
+Highly inspired by <a href="https://newsboat.org/">newsboat</a>
