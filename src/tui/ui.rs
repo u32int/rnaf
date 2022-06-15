@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::io::{Stdout, Write};
 
+use crossterm::cursor::MoveDown;
 use crossterm::style::{
     Attribute, Print, PrintStyledContent, SetAttribute, SetForegroundColor, Stylize,
 };
@@ -10,11 +11,12 @@ use crossterm::{cursor, execute, queue, style::Color, terminal};
 
 use rss::Channel;
 
-// Describes which menu the user is currently in along with the currently selected entry/item.
+// Describes which menu the user is currently viewing
 pub enum TuiState {
-    AllFeeds(u16),
-    Feed(u16, u16),
-    Article(u16, u16),
+    AllFeeds(u16),           // selected feed
+    Feed(u16, u16),          // feed number, selected article
+    Article(u16, u16, u16),  // feed number, article number, scroll distance
+    HelpMenu(Box<TuiState>), // prev state
 }
 
 pub struct Tui {
@@ -146,6 +148,13 @@ impl Tui {
                 }
                 let desc = currarticle.description().unwrap();
                 queue_html_as_string(desc.to_string(), stdout)?;
+            TuiState::HelpMenu(_) => {
+                queue!(
+                    stdout,
+                    cursor::MoveTo(0, 0),
+                    PrintStyledContent("HELP".with(Color::Blue)),
+                    cursor::MoveDown(2),
+                )?;
             }
         };
 

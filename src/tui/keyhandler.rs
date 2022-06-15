@@ -60,6 +60,18 @@ pub fn handle_keyevent(
                 Tui::clear(stdout)?;
                 app.tui.state = TuiState::Feed(*n, *i);
             }
+
+        TuiState::HelpMenu(prevstate) => match ev.code {
+            KeyCode::Esc | KeyCode::Char('q') => {
+                Tui::clear(stdout)?;
+
+                app.tui.state = match **prevstate {
+                    TuiState::AllFeeds(n) => TuiState::AllFeeds(n),
+                    TuiState::Feed(n, sel) => TuiState::Feed(n, sel),
+                    TuiState::Article(n, i, s) => TuiState::Article(n, i, s),
+                    _ => TuiState::AllFeeds(0),
+                }
+            }
             _ => {}
         },
     }
