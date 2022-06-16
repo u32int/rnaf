@@ -162,12 +162,19 @@ impl Tui {
                 queue_html_as_string(cropped.to_string(), stdout, self.termsize)?;
             }
             TuiState::HelpMenu(_) => {
+                const HELPTEXT: &str = "Keybindings:\n\
+					?            - Show this menu\n\
+					j/down, k/up - Scroll up and down\n\
+					Enter        - Enter/Confirm selection\n\
+					q/ESC        - Back/Quit";
                 queue!(
                     stdout,
                     cursor::MoveTo(0, 0),
-                    PrintStyledContent("HELP".with(Color::Blue)),
-                    cursor::MoveDown(2),
+                    PrintStyledContent("rnaf - Help".with(Color::Blue)),
                 )?;
+                for (i, line) in HELPTEXT.lines().enumerate() {
+                    queue!(stdout, cursor::MoveTo(0, i as u16 + 2), Print(line),)?;
+                }
             }
         };
 
